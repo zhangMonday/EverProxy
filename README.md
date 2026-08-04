@@ -70,7 +70,7 @@
 ### 1. 克隆项目
 
 ```bash
-git clone https://github.com/YourUsername/EverProxy.git
+git clone https://github.com/zhangMonday/EverProxy.git
 cd EverProxy
 ```
 
