@@ -1,0 +1,75 @@
+# =====================================================================
+# proxy_rotator configuration file
+# Restart the program after modification to take effect. All configuration items are under the [proxy] section.
+# =====================================================================
+[proxy]
+
+# [Required] API URL for fetching proxies
+api_url =
+
+# Incoming protocol (upstream proxy protocol): auto / http / https / socks5
+# 'auto' means automatic matching; if multiple protocols are supported, socks5 will be used first.
+input_protocol = auto
+
+# Output protocol (local 127.0.0.1 listening protocol): same / http / https / socks5
+# 'same' means the same as the incoming protocol (the local service is compatible with both HTTP and SOCKS5 connections, auto-detected)
+output_protocol = same
+
+# Force change IP interval (seconds), default 60
+force_change_interval = 60
+
+# If the API returns txt, the separator between IPs. Leave empty = default one IP per line.
+# Custom separator cannot be '.' or ':'
+txt_separator =
+
+# If the API returns json, the data path where the IP is located. Multiple paths are separated by semicolons, for example:
+#   ip
+#   proxy.ip
+#   proxy[*].ip
+#   proxy[*].ip;data[*].ip
+# If not set, the program supports only txt by default; an error will occur if the API returns json.
+json_ip_paths =
+
+# If IP and port are placed separately in json, fill in the port path here, for example:
+#   data[*].port
+# Corresponds one-to-one with json_ip_paths in order. Leave empty to indicate that the port follows the IP (ip:port).
+json_port_path =
+
+# URL for testing the availability of the proxy IP
+# By default the 'ip' parameter is left empty, meaning it queries the visitor's own IP geolocation
+test_url = https://whois.pconline.com.cn/ipJson.jsp?ip=&json=true
+
+# Timeout (seconds), default 3. If the test URL is not accessed successfully within this time, it is considered unavailable.
+timeout = 3
+
+# Heartbeat test interval (seconds), default 10. Heartbeat failure means the IP is invalid and will be replaced immediately.
+heartbeat_interval = 10
+
+# Multi-threaded IP availability test: true / false
+# false: use the first available IP by default
+# true: multi-threaded test of each IP's speed in accessing the test URL, using the fastest;
+#         up to 10 IPs are tested, excess ignored; if all are unavailable, fetch again from API
+multithread_test = false
+
+# Whether to display the geographic location of the obtained IP in the output: true / false
+# (Geolocation data is provided by PConline pconline.com.cn)
+show_location = true
+
+# Program language: cn (Simplified Chinese) / en (English)
+language = en
+
+# Output port number, default 1217. Other software can use the proxy by filling in 127.0.0.1:1217
+listen_port = 1217
+
+# Maximum number of attempts to fetch proxies, default 10.
+# If there are 10 consecutive failures (API request failed / response content unparseable / all proxies unavailable), the program will report an error and exit.
+# Retry interval increases exponentially (1s, 2s, 4s ...), with a maximum interval of 10 seconds.
+# Set to 0 for unlimited attempts.
+max_retries = 10
+
+# Standby IP pool size, default 2.
+# A background thread will fetch and test the next candidate proxy in advance, storing it in the standby pool.
+# When a switch is needed, the standby proxy is used directly to achieve a seamless switch, while the background replenishes the pool.
+# Set to 0 to disable the standby pool; each switch will fetch in real time.
+# Note: The validity period of a standby IP starts from the time it is obtained, consistent with force_change_interval.
+standby_pool_size = 2
